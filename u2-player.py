@@ -8,6 +8,7 @@ import time
 import getopt
 import sys
 import signal
+from subprocess import call
 
 
 def toggle_auto(driver):
@@ -63,11 +64,16 @@ while True:
     print "what shit you would like to do?"
     print "a - for toggle auto play"
     print "s - for pause"
+    print "+ - for increase volume"
+    print "- - for decrease volume"
     user_input = raw_input("choose one shit:")
 
     if user_input == "a":
         toggle_auto(driver)
     elif user_input == 's':
         toggle_video(driver)
+    elif user_input == '+':
+        call(["amixer", "-q", "sset", "Master", "5%+"])
+    elif user_input == '-':
+        call(["amixer", "-q", "sset", "Master", "5%-"])
 
-    time.sleep(1)
