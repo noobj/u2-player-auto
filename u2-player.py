@@ -10,6 +10,15 @@ import sys
 import signal
 
 
+def toggle_auto(driver):
+    a = driver.find_element_by_id('autoplay-checkbox')
+    a.click()
+
+def toggle_video(driver):
+    a = driver.find_element_by_css_selector('.player-api.player-width.player-height')
+    a.click()
+
+
 path =  expanduser("~") +'/' + 'python/chromedriver'
 driver = webdriver.Chrome(path)
 
@@ -24,8 +33,9 @@ i = 0
 search_query = ''
 
 def handler(sig, frame):
-    print "chill man"
+    print "peace man"
     driver.quit()
+    sys.exit()
 
 #fetch the args for the search query
 opt, args = getopt.getopt(sys.argv[1:], '')
@@ -48,4 +58,16 @@ driver.get(url_list[user_input])
 print "now playing ----- %s -------" % (text_list[user_input])
 
 signal.signal(signal.SIGINT, handler)
-signal.pause()
+
+while True:
+    print "what shit you would like to do?"
+    print "a - for toggle auto play"
+    print "s - for pause"
+    user_input = raw_input("choose one shit:")
+
+    if user_input == "a":
+        toggle_auto(driver)
+    elif user_input == 's':
+        toggle_video(driver)
+
+    time.sleep(1)
