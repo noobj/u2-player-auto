@@ -11,6 +11,7 @@ import signal
 from subprocess import call
 
 
+
 def toggle_auto(driver):
     a = driver.find_element_by_id('autoplay-checkbox')
     a.click()
@@ -24,7 +25,8 @@ path =  expanduser("~") +'/' + 'python/chromedriver'
 driver = webdriver.Chrome(path)
 
 #let driver waits for at most 5 seconds to find elements
-driver.implicitly_wait(5)
+#driver.implicitly_wait(5)
+
 #for store url
 url_list = []
 #for store name of video
@@ -46,12 +48,11 @@ search_query = search_query[:-1]
 
 driver.get('https://www.youtube.com/results?search_query='+search_query)
 time.sleep(3)
-tags = driver.find_elements_by_class_name('yt-lockup-title')
+tags = driver.find_elements_by_id('video-title')
 for tag in tags:
     print "[%d] %s" % (i, tag.text)
     text_list.append(tag.text)
-    a = tag.find_element_by_tag_name('a')
-    url_list.append(a.get_attribute('href'))
+    url_list.append(tag.get_attribute('href'))
     i += 1
 
 user_input = input("which one you like to play:")
@@ -66,9 +67,18 @@ while True:
     print "s - for pause"
     print "+ - for increase volume"
     print "- - for decrease volume"
+    print "n - next track"
+    print "p - previous track"
+    print "m - mute"
+    print "r - refresh"
     user_input = raw_input("choose one shit:")
 
-    if user_input == "a":
+    if user_input == 'n':
+        a = driver.find_element_by_css_selector('.content-link.spf-link.yt-uix-sessionlink.spf-link')
+        driver.get(a.get_attribute('href'))
+    elif user_input == 'p':
+        driver.back()
+    elif user_input == "a":
         toggle_auto(driver)
     elif user_input == 's':
         toggle_video(driver)
@@ -76,4 +86,8 @@ while True:
         call(["amixer", "-q", "sset", "Master", "5%+"])
     elif user_input == '-':
         call(["amixer", "-q", "sset", "Master", "5%-"])
-
+    elif user_input == 'm':
+        a = driver.find_element_by_css_selector('.player-api.player-width.player-height')
+        a.send_keys('m')
+    elif user_input == 'r':
+        driver.refresh()
